@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { MEMBERS } from "../constants/members";
 import { useExpenses } from "../hooks/useExpenses";
 import type { MemberId } from "../types";
-import { formatMoney } from "../utils/money";
+import { formatMoney, formatWholeMoney } from "../utils/money";
 import { ChartIcon, PeopleIcon, ReceiptIcon, WalletIcon } from "./Icons";
 
 function StatCard({
@@ -55,7 +55,7 @@ export function DashboardContent() {
     if (!settlements.length) return;
     const text = [
       `Kalpa Trip Settlement (${formatMoney(total)} total):`,
-      ...settlements.map((s) => `• ${s.from} pays ${s.to}: ${formatMoney(s.amount)}`),
+      ...settlements.map((s) => `• ${s.from} pays ${s.to}: ${formatWholeMoney(s.amount)}`),
     ].join("\n");
     navigator.clipboard?.writeText(text);
     setCopied(true);
@@ -336,7 +336,7 @@ export function DashboardContent() {
                     </span>
                   </div>
 
-                  <strong className="settlement-amount">{formatMoney(item.amount)}</strong>
+                  <strong className="settlement-amount">{formatWholeMoney(item.amount)}</strong>
                 </div>
               );
             })

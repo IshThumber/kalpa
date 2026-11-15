@@ -33,4 +33,23 @@ describe("balances and simplified settlements", () => {
     expect(balances.find((balance) => balance.memberId === "Ankit")?.net).toBe(60);
     expect(simplifyDebts(balances)).toEqual([{ from: "Bhargav", to: "Ankit", amount: 30 }, { from: "Devansh", to: "Ankit", amount: 30 }]);
   });
+
+  it("rounds settlement transfers to whole rupees without losing the rounded total", () => {
+    const balances = [
+      { memberId: "Ankit", paid: 0, owed: 0, net: 2.5 },
+      { memberId: "Bhargav", paid: 0, owed: 0, net: -1.51 },
+      { memberId: "Devansh", paid: 0, owed: 0, net: -0.99 },
+      { memberId: "Dhvanil", paid: 0, owed: 0, net: 0 },
+      { memberId: "Kashyap", paid: 0, owed: 0, net: 0 },
+      { memberId: "Ish", paid: 0, owed: 0, net: 0 },
+      { memberId: "Sagar", paid: 0, owed: 0, net: 0 },
+    ] as const;
+
+    const settlements = simplifyDebts([...balances]);
+    expect(settlements).toEqual([
+      { from: "Bhargav", to: "Ankit", amount: 2 },
+      { from: "Devansh", to: "Ankit", amount: 1 },
+    ]);
+    expect(settlements.reduce((sum, settlement) => sum + settlement.amount, 0)).toBe(3);
+  });
 });
